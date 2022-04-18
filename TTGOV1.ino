@@ -168,7 +168,7 @@ void loop() {
       }
       //Noise
       Serial.print("Noise Volts: ");
-      Serial.print(noiseSum/testCount);
+      Serial.print(soundSum/testCount);
       Serial.println(" Volts");
       //Particles
       Serial.print("Particles: ");
