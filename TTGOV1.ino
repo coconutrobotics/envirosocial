@@ -11,9 +11,9 @@
 
 //Σταθερές
 #define dustPin 12                      //Το pin του αισθητήρα μικροσωματιδίων - 12
+#define ledPin 18                       //Το pin για το φως του αισθητήρα μικροσωματιδίων - 18
 #define soundPin 27                     //To pin του αισθητήρα ήχου -  27
 #define gasPin 25                       //To pin του αισθητήρα ήχου -  27
-#define ledPin 18                       //Το pin για το φως του αισθητήρα μικροσωματιδίων - 18
 #define SEALEVELPRESSURE_HPA (1013.25)  //Η πίεση στο επίπεδο της θάλασσας (την βρήκαμε από το πρόγραμμα δοκιμής του αισθητήρα bme280)
 #define COV_RATIO 0.2                   //Σταθερές που χρειάζονται στον αισθητήρα μικροσωματιδίων (τις βρήκαμε από το πρόγραμμα δοκιμής του αισθητήρα)
 #define NO_DUST_VOLTAGE 400             //Σταθερές που χρειάζονται στον αισθητήρα μικροσωματιδίων (τις βρήκαμε από το πρόγραμμα δοκιμής του αισθητήρα)
@@ -72,7 +72,7 @@ void setup() {
   pinMode(ledPin,OUTPUT);               //Ορίζουμε το pin του led του αισθητήρα μικροσωματιδίων σε OUTPUT
   digitalWrite(ledPin, LOW);            //Κλείνουμε το led του αισθητήρα μικροσωματιδίων
   Serial.begin(115200);                 //Ξεκινάμε την σειριακή επικοινωνία με τον υπολογιστή (Αυτό χρειάζεται μόνο για τον έλεγχο του προγράμματος)          
-  SerialBT.begin("ESP32test");          //Bluetooth device name
+  SerialBT.begin("EnviroSocial");          //Bluetooth device name
   Serial.println("The device started"); //Ξεκινάμε την σειριακή επικοινωνία με το bluetooth
   result_bme = bme.begin();             //Ξεκινάμε τον αισθητήρα bme280 και αποθηκεύουμε στην λογική μεταβλητή τη κατάσταση του (true ή false)
   if (result_bme == false) {            //Ανάλογα με την κατάσταση του αισθητήρα bme280 γράφουμε στην σειριακή θύρα του υπολογιστή το κατάλληλο μήνυμα
@@ -85,12 +85,12 @@ void setup() {
 void loop() {
   if (SerialBT.available() > 0) {             //Αν υπάρχει διαθέσιμο μήνυμα στην θύρα του bluetooth τότε
     String command = SerialBT.readString();   //Διαβάζουμε το μήνυμα
+    command.trim();                           //Καθαρίζουμε το μήνυμα από whitespaces
     Serial.println(command);                  //Γράφουμε το μήνυμα και στην σειριακή θύρα του υπολογιστή για έλεγχο του προγράμματος
     if (command == "getdata") {               //Αν το μήνυμα που πήραμε είναι το getdata τότε πρέπει να μαζέψουμε τα δεδομένα
-      //SerialBT.println("command correct");
-      Serial.println("command correct");
+      Serial.println("Preparing data");
       unsigned long startTestMillis= millis();//Η συλλογή δεδομένων θα γίνει για 3 δευτερόλεπτα
-      double voltsSum = 0;                    //Άθροισμα τιμών ήχου (volts προς το παρόν)
+      double soundSum = 0;                    //Άθροισμα τιμών ήχου (volts προς το παρόν)
       float temperatureSum = 0;               //Άθροισμα τιμών θερμοκρασίας
       float pressureSum = 0;                  //Άθροισμα τιμών πίεσης
       float humiditySum = 0;                  //Άθροισμα τιμών υγρασίας
@@ -98,8 +98,7 @@ void loop() {
       float densitySum = 0;
       int testCount = 0;                      //Μετρητής μετρήσεων
       while (millis() - startTestMillis < testWindow) { //Ξεκινάμε την συλλογή δεδομένων για 3 δευτερόλεπτα
-        testCount = testCount+1;              //Αυξάνουμε τον μετρητή των τεστ
-        
+        testCount = testCount + 1;              //Αυξάνουμε τον μετρητή των τεστ        
         unsigned long startMillis= millis();  //Ξεκινάμε το χρονικό παράθυρο για την συλλογή του ήχου
         unsigned int peakToPeak = 0;          
         unsigned int signalMax = 0;
@@ -117,7 +116,7 @@ void loop() {
         }
         peakToPeak = signalMax - signalMin;  // max - min = peak-peak amplitude
         double volts = (peakToPeak * 5.0) / 1024;  // convert to volts
-        voltsSum = voltsSum+volts;
+        soundSum = soundSum+volts;
 
         //Μαζεύουμε τα δεδομένα από τον αισθητήρα bme280
         if (result_bme == true) {
@@ -151,37 +150,37 @@ void loop() {
       //Στέλνουμε τα δεδομένα και στην σειριακή θύρα του υπολογιστή για έλεγχο δεδομένων
       if (result_bme == true) {
         //Temperature
-        Serial.print("temperature:");                           
+        Serial.print("Temperature: ");                           
         Serial.print(temperatureSum/testCount);
-        Serial.println("*C   ");
+        Serial.println(" celcius");
         //Pressure
-        Serial.print("pressure:");
+        Serial.print("Pressure: ");
         Serial.print(pressureSum/testCount);
-        Serial.println("hPa   ");
+        Serial.println(" hPa");
         //Humidity
-        Serial.print("humidity:");
+        Serial.print("Humidity: ");
         Serial.print(humiditySum/testCount);
-        Serial.println("%   ");
+        Serial.println(" %");
         //Altitude
-        Serial.print("altitude:");
+        Serial.print("Altitude: ");
         Serial.print(altitudeSum/testCount);
-        Serial.println("m");
+        Serial.println(" m");
       }
       //Noise
-      Serial.print("noise Volts = ");
-      Serial.println(voltsSum/testCount);
+      Serial.print("Noise Volts: ");
+      Serial.print(noiseSum/testCount);
+      Serial.println(" Volts");
       //Particles
-      Serial.println("GP2Y1010AU0F readings");
-      Serial.print("density = ");
+      Serial.print("Particles: ");
       Serial.print(densitySum/testCount);
-      Serial.println("mg/m3");
+      Serial.println(" mg/m3");
       
       //Στέλνουμε τα δεδομένα στο κινητό τηλέφωνο μέσω bluetooth
       SerialBT.print(temperatureSum/testCount);
       SerialBT.print("*");
       SerialBT.print(humiditySum/testCount);
       SerialBT.print("*");
-      SerialBT.print(voltsSum/testCount);
+      SerialBT.print(soundSum/testCount);
       SerialBT.print("*");
       SerialBT.print(densitySum/testCount);
       SerialBT.print("*");
