@@ -10,6 +10,7 @@
 
 //Varibales
 const int sampleTime = 50;                  //Sample time window in microseconds
+int noise;
 
 //Αντικείμενα
 
