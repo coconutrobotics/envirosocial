@@ -1,3 +1,8 @@
+// Program for testing the MEMS Fermion Microphone
+// Upload program to ESP32 and open serial monitor
+// Type "getdata" to serial monitor and the ESP32 
+// will return the value of noise (0-100)
+
 //Libraries
 
 //Constants
