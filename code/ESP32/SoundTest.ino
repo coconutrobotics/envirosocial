@@ -24,7 +24,7 @@ void loop() {
     command.trim();                         //Trim whitespaces
     if (command == "getdata") {             //If message is getdata then send output
       Serial.println("Preparing data");
-      int noise = findPTPAmp();             //Noise outcome is an integer from 0-100
+      noise = findPTPAmp();             //Noise outcome is an integer from 0-100
       Serial.print("sound: ");
       Serial.print(noise);
       Serial.println(" %");
