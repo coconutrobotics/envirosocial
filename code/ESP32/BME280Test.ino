@@ -1,3 +1,9 @@
+// Program for testing the BME280 sensor
+// Upload program to ESP32 and open serial monitor
+// Type "getdata" to serial monitor and the ESP32 
+// will return the values of temperature, humidity
+// pressure and altitude
+
 //Libraries
 #include <Wire.h>                       
 #include <Adafruit_BME280.h>            
