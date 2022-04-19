@@ -14,6 +14,10 @@
 
 //Variables
 bool result_bme;                        //Boolean for checking if BME280 works                 
+float temperature;
+float pressure;
+float humidity;
+float altitude;
 
 //Objects
 Adafruit_BME280 bme;                    
@@ -36,10 +40,10 @@ void loop() {
     if (command == "getdata") {             
       Serial.println("Preparing data");
       if (result_bme == true) {
-        float temperature = bme.readTemperature();
-        float pressure = bme.readPressure()/100.0F;
-        float humidity = bme.readHumidity();
-        float altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
+        temperature = bme.readTemperature();
+        pressure = bme.readPressure()/100.0F;
+        humidity = bme.readHumidity();
+        altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
         //Temperature
         Serial.print("Temperature: ");                           
         Serial.print(temperature);
