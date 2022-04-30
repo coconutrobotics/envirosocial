@@ -144,8 +144,8 @@ void loop() {
         SerialBT.print("*");
         SerialBT.print(pressure);
         SerialBT.print("*");
-        SerialBT.print(altitude);
-        SerialBT.print("*");
+        //SerialBT.print(altitude);
+        //SerialBT.print("*");
         SerialBT.print(gas);
         SerialBT.print("*");
         SerialBT.print(noise);
@@ -161,8 +161,8 @@ void loop() {
         Serial.print("Pressure: ");
         Serial.print(pressure);
         Serial.println(" hPa");
-        Serial.print("Altitude: ");
-        Serial.print(altitude);
+        //Serial.print("Altitude: ");
+        //Serial.print(altitude);
         Serial.println(" m");
         Serial.print("Gas: ");
         Serial.print(gas);
